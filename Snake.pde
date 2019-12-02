@@ -3,6 +3,7 @@ class Snake {
   String direction = "right";
   int x;
   int y;
+  int score = 0;
   ArrayList<SnakePart> snakeParts = new ArrayList<SnakePart>();
   
   Snake(Food foodNew) {
@@ -67,23 +68,36 @@ class Snake {
     }
   }
   
+  void showScore() {
+    textSize(20);
+    text("Score: " + score, 10, 20);
+  }
+  
   void screenCollision() {
     SnakePart head = snakeParts.get(0);
     if(head.y <= 0) {
       init();
+      score = 0;
     } else if(head.y >= 580) {
       init();
+      score = 0;
     } else if(head.x <= 0) {
       init();
+      score = 0;
     } else if(head.x >= 680) {
       init();
+      score = 0;
     }
   }
   
   void snakeTailCollision() {
-    for(SnakePart snakePart : snakeParts) {
-      if(getDistanceBetweenNodes(food.x, food.y, snakePart.x, snakePart.y) == 0) {
-        init();
+    SnakePart head = snakeParts.get(0);
+    if(snakeParts.size() >= 5) {
+      for(int i = 1; i < snakeParts.size()-1; i++) {
+        SnakePart snakePart = snakeParts.get(i);
+        if(getDistanceBetweenNodes(head.x, head.y, snakePart.x, snakePart.y) == 0) {
+          init();
+        }
       }
     }
   }
@@ -91,6 +105,7 @@ class Snake {
   void foodCollision() {
     SnakePart snakeHead = snakeParts.get(0);
     if(getDistanceBetweenNodes(snakeHead.x, snakeHead.y, food.x, food.y) == 0) {
+      score += 1;
       SnakePart snakeTail = snakeParts.get(snakeParts.size()-1);
       if(direction == "top") {
         snakeParts.add(new SnakePart(snakeTail.x, snakeTail.y-20, "grey"));
@@ -118,5 +133,6 @@ class Snake {
     snakeTailCollision();
     move();
     showSnake();
+    showScore();
   }
 }
